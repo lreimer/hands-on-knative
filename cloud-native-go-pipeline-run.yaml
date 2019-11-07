@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: cloud-native-go-pipeline-run-1
+spec:
+  serviceAccountName: cloud-native-go-service
+  pipelineRef:
+    name: cloud-native-go-pipeline
+  resources:
+    - name: source-repo
+      resourceRef:
+        name: cloud-native-go-git
+    - name: web-image
+      resourceRef:
+        name: cloud-native-go-image-lreimer

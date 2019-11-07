@@ -59,19 +59,17 @@ knative-ambassador:
 
 	@$(K8S) get pods --namespace knative-serving
 	@$(K8S) get pods --namespace tekton-pipelines
-	
+
 	@$(K8S) get svc ambassador
 	@$(K8S) edit cm config-domain --namespace knative-serving
 
 knative-gloo:
-	@glooctl install gateway
-	@glooctl install knative --install-knative --install-eventing --install-monitoring
+	@glooctl install knative --install-knative-version 0.8.0 --install-eventing --install-eventing-version 0.8.0
 	@$(K8S) apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.8.0/release.yaml
 
 	@$(K8S) get pods --namespace gloo-system
 	@$(K8S) get pods --namespace knative-serving
 	@$(K8S) get pods --namespace knative-eventing
-	@$(K8S) get pods --namespace knative-monitoring
 	@$(K8S) get pods --namespace tekton-pipelines
 
 	@$(K8S) get svc -n gloo-system

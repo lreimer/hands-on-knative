@@ -1,0 +1,42 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: cloud-native-go-pipeline
+spec:
+  resources:
+    - name: source-repo
+      type: git
+    - name: docker-image
+      type: image
+  tasks:
+    - name: build-docker-image
+      taskRef:
+        name: build-docker-image-from-git-source
+      params:
+        - name: pathToDockerFile
+          value: /workspace/docker-source/Dockerfile
+        - name: pathToContext
+          value: /workspace/docker-source
+      resources:
+        inputs:
+          - name: docker-source
+            resource: source-repo
+        outputs:
+          - name: builtImage
+            resource: docker-image
+    - name: deploy-image
+      taskRef:
+        name: deploy-using-kubectl
+      resources:
+        inputs:
+          - name: source
+            resource: source-repo
+          - name: image
+            resource: docker-image
+            from:
+              - build-docker-image
+      params:
+        - name: path
+          value: /workspace/source/k8s-deployment.yml
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"

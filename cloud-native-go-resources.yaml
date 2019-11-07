@@ -1,0 +1,22 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: cloud-native-go-git
+spec:
+  type: git
+  params:
+    - name: revision
+      value: master
+    - name: url
+      value: https://github.com/lreimer/cloud-native-go
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: cloud-native-go-image-lreimer
+spec:
+  type: image
+  params:
+    - name: url
+      value: lreimer/cloud-native-go
